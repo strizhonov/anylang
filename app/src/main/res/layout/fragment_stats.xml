@@ -1,0 +1,45 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.strizhonovapps.anylangapp.view.StatsFragment">
+
+    <TextView
+        android:id="@+id/if_empty_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_list_text_message"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
+        android:id="@+id/x_axis_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/word_level_content"
+        android:textSize="12sp" />
+
+    <com.strizhonovapps.anylangapp.viewsupport.VerticalTextView
+        android:id="@+id/y_axis_name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="top"
+        android:rotation="180"
+        android:text="@string/word_amount_content"
+        android:textSize="12sp" />
+
+</FrameLayout>
