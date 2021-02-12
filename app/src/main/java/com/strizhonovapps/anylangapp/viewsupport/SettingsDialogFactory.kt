@@ -10,8 +10,6 @@ import com.strizhonovapps.anylangapp.R
 import com.strizhonovapps.anylangapp.service.WordService
 import com.strizhonovapps.anylangapp.view.WordListSettingsActivity
 import java.io.InputStream
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
 
 class SettingsDialogFactory(private val activity: WordListSettingsActivity,
                             private val context: Context,
@@ -35,17 +33,15 @@ class SettingsDialogFactory(private val activity: WordListSettingsActivity,
                 .setView(separatorEditText)
                 .setPositiveButton(context.getString(R.string.done_content)) { _: DialogInterface?, _: Int ->
                     val separator = separatorEditText.text.toString()
-                    Callable {
-                        try {
-                            wordService.saveAllFromStream(inputStream!!, separator)
-                            activity.finish()
-                        } catch (e: Exception) {
-                            Log.e(this.javaClass.simpleName, "Unable to save words from file.", e)
-                            Toast.makeText(context,
-                                    context.getString(R.string.unable_to_save_from_file_message),
-                                    Toast.LENGTH_SHORT).show()
-                        }
-                    }.also { Executors.newSingleThreadExecutor().submit(it) }
+                    try {
+                        wordService.saveAllFromStream(inputStream!!, separator)
+                        activity.finish()
+                    } catch (e: Exception) {
+                        Log.e(this.javaClass.simpleName, "Unable to save words from file.", e)
+                        Toast.makeText(context,
+                                context.getString(R.string.unable_to_save_from_file_message),
+                                Toast.LENGTH_SHORT).show()
+                    }
                 }
                 .setNegativeButton(context.getString(R.string.cancel_content), null)
                 .create()

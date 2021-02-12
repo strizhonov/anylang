@@ -14,7 +14,6 @@ import com.strizhonovapps.anylangapp.R
 import com.strizhonovapps.anylangapp.SHARED_PREFERENCES_FILE
 import com.strizhonovapps.anylangapp.di.DaggerSelectLanguageDialogComponent
 import com.strizhonovapps.anylangapp.di.WordServiceModule
-import com.strizhonovapps.anylangapp.service.InternetChecker
 import com.strizhonovapps.anylangapp.service.WordService
 import com.strizhonovapps.anylangapp.types.LanguageType
 import java.util.*
@@ -22,7 +21,7 @@ import javax.inject.Inject
 
 private const val DEFAULT_LANG_KEY = "en"
 
-class SelectLanguageDialog(private val internetChecker: InternetChecker = InternetChecker()) : AppCompatActivity() {
+class SelectLanguageDialog() : AppCompatActivity() {
 
     private val availableLangs: SortedMap<String, String> = TreeMap()
 
@@ -57,8 +56,8 @@ class SelectLanguageDialog(private val internetChecker: InternetChecker = Intern
         availableLangs["Chinese"] = "zh"
     }
 
-    private lateinit var nativeLang: String
-    private lateinit var studyLang: String
+    private var nativeLang: String? = null
+    private var studyLang: String? = null
 
     @Inject
     lateinit var wordService: WordService
@@ -86,9 +85,6 @@ class SelectLanguageDialog(private val internetChecker: InternetChecker = Intern
     }
 
     private fun getAvailableLangsNamesAndCodes(type: LanguageType): Map<String, String> {
-        if (!internetChecker.isInternetAvailable()) {
-            throw RuntimeException("Internet connection is not available")
-        }
         val availableByApiLangs = wordService.getSupportedLanguages(type).toMutableSet()
         val availableByApiAndAppLangs = TreeMap<String, String>()
         for ((key, value) in availableLangs) {
@@ -121,8 +117,11 @@ class SelectLanguageDialog(private val internetChecker: InternetChecker = Intern
         }
         adBuilder.setTitle(getString(R.string.native_lang_dialog_title))
         adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _: Int ->
+            if (nativeLang == null) {
+                nativeLang = langs[items[0]]!!
+            }
             setNativeLanguageToPreferences()
-            wordService.setNativeLang(nativeLang)
+            wordService.setNativeLang(nativeLang!!)
             dialog.dismiss()
             finishActivityWithEmptyResult()
         }
@@ -135,8 +134,11 @@ class SelectLanguageDialog(private val internetChecker: InternetChecker = Intern
         }
         adBuilder.setTitle(getString(R.string.study_lang_dialog_title))
         adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _: Int ->
+            if (studyLang == null) {
+                studyLang = langs[items[0]]!!
+            }
             setStudyLanguageToPreferences()
-            wordService.setStudyLang(studyLang)
+            wordService.setStudyLang(studyLang!!)
             dialog.dismiss()
             finishActivityWithEmptyResult()
         }

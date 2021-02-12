@@ -1,9 +1,6 @@
 package com.strizhonovapps.anylangapp.translator
 
 import com.strizhonovapps.anylangapp.types.LanguageType
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 class TranslationProviderImpl(
         private var from: String,
@@ -25,9 +22,9 @@ class TranslationProviderImpl(
      * @param queryWord word to translate
      * @return retrieved translation or null if there is no translation found
      */
-    override fun getTranslation(queryWord: String) = submitCallable {
+    override fun getTranslation(queryWord: String): String? {
         val translations = getAllTranslations(queryWord)
-        if (translations.isEmpty()) {
+        return if (translations.isEmpty()) {
             null
         } else {
             translations[0]
@@ -40,12 +37,12 @@ class TranslationProviderImpl(
      * @param queryWord word to translate
      * @return list of retrieved translations
      */
-    override fun getAllTranslations(queryWord: String) = submitCallable { apiProcessor.getAllTranslations(queryWord, from, to) }
+    override fun getAllTranslations(queryWord: String): List<String> {
+        return apiProcessor.getAllTranslations(queryWord, from, to)
+    }
 
-    override fun getSupportedLanguages(type: LanguageType) = submitCallable { apiProcessor.getAllLanguages(type) }
-
-    private fun <R> submitCallable(func: () -> R) = Executors.newSingleThreadExecutor().submit(Callable {
-        func.invoke()
-    })[1000, TimeUnit.MILLISECONDS]!!
+    override fun getSupportedLanguages(type: LanguageType): Set<String> {
+        return apiProcessor.getAllLanguages(type)
+    }
 
 }

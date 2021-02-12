@@ -1,9 +1,13 @@
 package com.strizhonovapps.anylangapp.service
 
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class RequestSender {
 
@@ -14,21 +18,29 @@ class RequestSender {
      * @return json string
      */
     fun sendGetRequestForJson(requestUrl: URL): String {
-        val urlConnection = requestUrl.openConnection() as HttpURLConnection
-        try {
-            urlConnection.connect()
-            val inputStream = urlConnection.inputStream
-            BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                val builder = StringBuilder()
-                var line: String
-                while (reader.readLine().also { line = it } != null) {
-                    builder.append(line)
-                    builder.append("\n")
+        return Executors.newSingleThreadExecutor().submit(Callable {
+            val httpURLConnection = requestUrl.openConnection() as? HttpURLConnection
+            httpURLConnection.run {
+                try {
+                    httpURLConnection?.connect()
+                    val inputStream = httpURLConnection?.inputStream
+                    return@run getJsonStringFromInputStream(inputStream)
+                } finally {
+                    httpURLConnection?.disconnect()
                 }
-                return builder.toString()
             }
-        } finally {
-            urlConnection.disconnect()
+        })[5000, TimeUnit.MILLISECONDS]
+    }
+
+    private fun getJsonStringFromInputStream(inputStream: InputStream?): String {
+        BufferedReader(InputStreamReader(inputStream)).use { reader ->
+            val builder = StringBuilder()
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                builder.append(line)
+                builder.append("\n")
+            }
+            return builder.toString()
         }
     }
 

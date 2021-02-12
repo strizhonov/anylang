@@ -196,6 +196,7 @@ class TrainingFragment : Fragment(), View.OnClickListener {
         deleteLayout!!.visibility = View.INVISIBLE
         wordCard!!.visibility = View.INVISIBLE
         topNavLayout!!.visibility = View.INVISIBLE
+        emptyTextView!!.visibility = View.VISIBLE
         emptyTextView?.setText(R.string.words_are_over_message)
         getWordsBtn!!.visibility = View.VISIBLE
     }
