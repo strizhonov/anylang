@@ -11,7 +11,7 @@ import com.strizhonovapps.anylangapp.R
 import com.strizhonovapps.anylangapp.di.DaggerModifyWordActivityComponent
 import com.strizhonovapps.anylangapp.di.WordServiceModule
 import com.strizhonovapps.anylangapp.model.Word
-import com.strizhonovapps.anylangapp.service.CircleListIterator
+import com.strizhonovapps.anylangapp.service.TwoSideIterator
 import com.strizhonovapps.anylangapp.service.WordService
 import java.util.*
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class ModifyWordActivity : Activity(), View.OnClickListener {
 
     private lateinit var nameEditText: EditText
     private lateinit var transEditText: EditText
-    private var iterator: CircleListIterator<String>? = null
+    private var iterator: TwoSideIterator<String>? = null
 
     @Inject
     lateinit var wordService: WordService
@@ -107,7 +107,7 @@ class ModifyWordActivity : Activity(), View.OnClickListener {
         return try {
             if (iterator == null) {
                 val toIterate = wordService.getAllTranslations(queryString)
-                iterator = CircleListIterator(toIterate)
+                iterator = TwoSideIterator(toIterate)
             }
             true
         } catch (e: Exception) {

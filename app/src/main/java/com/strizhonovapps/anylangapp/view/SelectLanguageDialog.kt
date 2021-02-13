@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 private const val DEFAULT_LANG_KEY = "en"
 
-class SelectLanguageDialog() : AppCompatActivity() {
+class SelectLanguageDialog : AppCompatActivity() {
 
     private val availableLangs: SortedMap<String, String> = TreeMap()
 
@@ -97,7 +97,7 @@ class SelectLanguageDialog() : AppCompatActivity() {
 
     private fun createLangsDialog(langs: Map<String, String>, type: LanguageType): AlertDialog {
         val adBuilder = AlertDialog.Builder(this)
-        adBuilder.setNegativeButton(super.getString(R.string.cancel_content)) { dialog: DialogInterface, _: Int ->
+        adBuilder.setNegativeButton(super.getString(R.string.cancel_content)) { dialog: DialogInterface, _ ->
             dialog.dismiss()
             setDefaultLanguages(type)
             finishActivityWithEmptyResult()
@@ -110,13 +110,14 @@ class SelectLanguageDialog() : AppCompatActivity() {
         return adBuilder.create()
     }
 
-    private fun customizeBuilderForNativeLanguage(adBuilder: AlertDialog.Builder, langs: Map<String, String>) {
+    private fun customizeBuilderForNativeLanguage(adBuilder: AlertDialog.Builder,
+                                                  langs: Map<String, String>) {
         val items = langs.keys.toTypedArray()
-        adBuilder.setSingleChoiceItems(items, 0) { _: DialogInterface?, n: Int ->
+        adBuilder.setSingleChoiceItems(items, 0) { _, n: Int ->
             nativeLang = langs[items[n]]!!
         }
         adBuilder.setTitle(getString(R.string.native_lang_dialog_title))
-        adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _: Int ->
+        adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _ ->
             if (nativeLang == null) {
                 nativeLang = langs[items[0]]!!
             }
@@ -127,13 +128,14 @@ class SelectLanguageDialog() : AppCompatActivity() {
         }
     }
 
-    private fun customizeBuilderForStudyLanguage(adBuilder: AlertDialog.Builder, langs: Map<String, String>) {
+    private fun customizeBuilderForStudyLanguage(adBuilder: AlertDialog.Builder,
+                                                 langs: Map<String, String>) {
         val items = langs.keys.toTypedArray()
-        adBuilder.setSingleChoiceItems(items, 0) { _: DialogInterface?, n: Int ->
+        adBuilder.setSingleChoiceItems(items, 0) { _, n: Int ->
             studyLang = langs[items[n]]!!
         }
         adBuilder.setTitle(getString(R.string.study_lang_dialog_title))
-        adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _: Int ->
+        adBuilder.setPositiveButton(getString(R.string.ok_content)) { dialog: DialogInterface, _ ->
             if (studyLang == null) {
                 studyLang = langs[items[0]]!!
             }
@@ -161,7 +163,7 @@ class SelectLanguageDialog() : AppCompatActivity() {
     }
 
     private fun setDefaultLanguages(type: LanguageType) {
-        val preferences: SharedPreferences = getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
+        val preferences = getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
         when (type) {
             LanguageType.NATIVE_LANGUAGE -> {
                 if (!preferences.contains(LanguageType.NATIVE_LANGUAGE.toString())) {
@@ -187,7 +189,7 @@ class SelectLanguageDialog() : AppCompatActivity() {
     }
 
     private fun setNativeLanguageToPreferences() {
-        val preferences: SharedPreferences = super.getSharedPreferences(SHARED_PREFERENCES_FILE, MODE_PRIVATE)
+        val preferences = super.getSharedPreferences(SHARED_PREFERENCES_FILE, MODE_PRIVATE)
         val preferencesEditor = preferences.edit()
         preferencesEditor.putString(LanguageType.NATIVE_LANGUAGE.toString(), nativeLang)
         preferencesEditor.apply()

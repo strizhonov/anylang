@@ -4,7 +4,7 @@ import android.util.Log
 
 private const val START_INDEX = -1
 
-class CircleListIterator<T>(private val toIterate: List<T>) : Iterator<T> {
+class TwoSideIterator<T>(private val toIterate: List<T>) : Iterator<T> {
 
     private var index = START_INDEX
 

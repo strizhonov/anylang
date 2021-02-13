@@ -41,15 +41,19 @@ class WordListSettingsActivity : Activity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        hide()
+        hideItemsShowLoading()
         when (v.id) {
             R.id.clear_list_button -> {
-                SettingsDialogFactory(this, applicationContext, wordService).getEraseConfirmationDialog().show()
-                show()
+                SettingsDialogFactory(this, applicationContext, wordService)
+                        .getEraseConfirmationDialog()
+                        .show()
+                showItemsHideLoading()
             }
             R.id.reset_progress_button -> {
-                SettingsDialogFactory(this, applicationContext, wordService).getResetProgressDialog().show()
-                show()
+                SettingsDialogFactory(this, applicationContext, wordService)
+                        .getResetProgressDialog()
+                        .show()
+                showItemsHideLoading()
             }
             R.id.delete_duplicates_button -> {
                 wordService.removeDuplicates()
@@ -82,7 +86,7 @@ class WordListSettingsActivity : Activity(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        show()
+        showItemsHideLoading()
     }
 
     private fun showFileUploadingDialogOrToast(data: Intent?) {
@@ -103,7 +107,7 @@ class WordListSettingsActivity : Activity(), View.OnClickListener {
         }
     }
 
-    private fun hide() {
+    private fun hideItemsShowLoading() {
         this.title = this.getString(R.string.wait_content)
         this.findViewById<View>(R.id.clear_list_button).visibility = View.GONE
         this.findViewById<View>(R.id.delete_duplicates_button).visibility = View.GONE
@@ -114,7 +118,7 @@ class WordListSettingsActivity : Activity(), View.OnClickListener {
         this.findViewById<View>(R.id.progress_bar).visibility = View.VISIBLE
     }
 
-    private fun show() {
+    private fun showItemsHideLoading() {
         this.findViewById<View>(R.id.clear_list_button).visibility = View.VISIBLE
         this.findViewById<View>(R.id.delete_duplicates_button).visibility = View.VISIBLE
         this.findViewById<View>(R.id.sync_button).visibility = View.VISIBLE

@@ -11,13 +11,13 @@ import com.strizhonovapps.anylangapp.R
 import com.strizhonovapps.anylangapp.di.DaggerAddWordActivityComponent
 import com.strizhonovapps.anylangapp.di.WordServiceModule
 import com.strizhonovapps.anylangapp.model.Word
-import com.strizhonovapps.anylangapp.service.CircleListIterator
+import com.strizhonovapps.anylangapp.service.TwoSideIterator
 import com.strizhonovapps.anylangapp.service.WordService
 import javax.inject.Inject
 
 class AddWordActivity : Activity(), View.OnClickListener {
 
-    private var iterator: CircleListIterator<String>? = null
+    private var iterator: TwoSideIterator<String>? = null
     private lateinit var nameEditText: EditText
     private lateinit var transEditText: EditText
 
@@ -67,7 +67,7 @@ class AddWordActivity : Activity(), View.OnClickListener {
         val queryString = nameEditText.text.toString()
         if (iterator == null) {
             val toIterate = wordService.getAllTranslations(queryString)
-            iterator = CircleListIterator(toIterate)
+            iterator = TwoSideIterator(toIterate)
         }
         true
     } catch (e: Exception) {

@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.EditText
 import android.widget.ListView
@@ -58,20 +57,24 @@ class WordListFragment : Fragment() {
         listView = view.findViewById(R.id.list_view)
         listView!!.emptyView = view.findViewById(R.id.empty_text_view)
         listView!!.isTextFilterEnabled = true
-        listView!!.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, newView: View, _: Int, _: Long ->
-            val idTextView = newView.findViewById<TextView>(R.id.id_text_view)
-            val presentId = idTextView.text.toString().toLong()
-            val (id, name, translation, lvl, targetDate, modificationDate) = wordService.get(presentId)!!
-            val modifyIntent = Intent(context, ModifyWordActivity::class.java)
-            modifyIntent.putExtra(getString(R.string.id_key), id)
-                    .putExtra(getString(R.string.name_key), name)
-                    .putExtra(getString(R.string.translation_key), translation)
-                    .putExtra(getString(R.string.lvl_key), lvl)
-                    .putExtra(getString(R.string.target_date_time_key), targetDate.time)
-                    .putExtra(getString(R.string.modification_date_time_key), modificationDate.time)
-            startActivity(modifyIntent)
+        listView!!.onItemClickListener = OnItemClickListener { _, newView: View, _, _ ->
+            onListItemClick(newView)
         }
         listView!!.adapter = adapter
+    }
+
+    private fun onListItemClick(newView: View) {
+        val idTextView = newView.findViewById<TextView>(R.id.id_text_view)
+        val presentId = idTextView.text.toString().toLong()
+        val (id, name, translation, lvl, targetDate, modificationDate) = wordService.get(presentId)!!
+        val modifyIntent = Intent(context, ModifyWordActivity::class.java)
+        modifyIntent.putExtra(getString(R.string.id_key), id)
+                .putExtra(getString(R.string.name_key), name)
+                .putExtra(getString(R.string.translation_key), translation)
+                .putExtra(getString(R.string.lvl_key), lvl)
+                .putExtra(getString(R.string.target_date_time_key), targetDate.time)
+                .putExtra(getString(R.string.modification_date_time_key), modificationDate.time)
+        startActivity(modifyIntent)
     }
 
     private fun initSearch(view: View) {
