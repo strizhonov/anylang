@@ -9,15 +9,12 @@ import com.strizhonovapps.anylangapp.service.WordService
 import com.strizhonovapps.anylangapp.types.LanguageType
 
 class StudyLanguageDialogFactory(private val wordService: WordService,
-                                 private val context: AppCompatActivity)
-    : BaseLanguageDialogFactory(wordService, context) {
+                                 private val context: AppCompatActivity,
+                                 setLangFunction: (LanguageType, String) -> Unit,
+                                 private val finishActivityFunc: () -> Unit)
+    : BaseLanguageDialogFactory(wordService, context, setLangFunction, finishActivityFunc) {
 
     private var studyLang: String? = null
-
-    override fun setDefaultLanguage() {
-        super.setDefaultLanguage(LanguageType.STUDY_LANGUAGE)
-        finishActivityWithEmptyResult()
-    }
 
     override fun getDialog(): AlertDialog {
         val dialogTemplateWithNegativeButton =
@@ -40,7 +37,7 @@ class StudyLanguageDialogFactory(private val wordService: WordService,
             setStudyLanguageToPreferences()
             wordService.setStudyLang(studyLang!!)
             dialog.dismiss()
-            finishActivityWithEmptyResult()
+            finishActivityFunc()
         }
         return adBuilder.create()
     }

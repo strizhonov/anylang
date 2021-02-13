@@ -4,13 +4,14 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import com.strizhonovapps.anylangapp.R
-import com.strizhonovapps.anylangapp.SHARED_PREFERENCES_FILE
 import com.strizhonovapps.anylangapp.service.WordService
 import com.strizhonovapps.anylangapp.types.LanguageType
 
 class NativeLanguageDialogFactory(private val wordService: WordService,
-                                  private val context: AppCompatActivity)
-    : BaseLanguageDialogFactory(wordService, context) {
+                                  private val context: AppCompatActivity,
+                                  private val setLangFunction: (LanguageType, String) -> Unit,
+                                  private val finishActivityFunc: () -> Unit)
+    : BaseLanguageDialogFactory(wordService, context, setLangFunction, finishActivityFunc) {
 
     private var nativeLang: String? = null
 
@@ -19,11 +20,6 @@ class NativeLanguageDialogFactory(private val wordService: WordService,
                 super.getDialogTemplateWithDefaultNegativeButton(LanguageType.NATIVE_LANGUAGE)
         val availableLangs = super.getAvailableLangsNamesAndCodes(LanguageType.NATIVE_LANGUAGE)
         return updateAlertDialogWithLangSettings(dialogTemplateWithNegativeButton, availableLangs)
-    }
-
-    override fun setDefaultLanguage() {
-        super.setDefaultLanguage(LanguageType.NATIVE_LANGUAGE)
-        finishActivityWithEmptyResult()
     }
 
     private fun updateAlertDialogWithLangSettings(adBuilder: AlertDialog.Builder,
@@ -37,20 +33,12 @@ class NativeLanguageDialogFactory(private val wordService: WordService,
             if (nativeLang == null) {
                 nativeLang = langs[items[0]]!!
             }
-            setNativeLanguageToPreferences()
+            setLangFunction(LanguageType.NATIVE_LANGUAGE, nativeLang!!)
             wordService.setNativeLang(nativeLang!!)
             dialog.dismiss()
-            finishActivityWithEmptyResult()
+            finishActivityFunc()
         }
         return adBuilder.create()
-    }
-
-    private fun setNativeLanguageToPreferences() {
-        val preferences = context.getSharedPreferences(SHARED_PREFERENCES_FILE,
-                AppCompatActivity.MODE_PRIVATE)
-        val preferencesEditor = preferences.edit()
-        preferencesEditor.putString(LanguageType.NATIVE_LANGUAGE.toString(), nativeLang)
-        preferencesEditor.apply()
     }
 
 }

@@ -1,21 +1,18 @@
 package com.strizhonovapps.anylangapp.viewsupport
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.strizhonovapps.anylangapp.R
-import com.strizhonovapps.anylangapp.SHARED_PREFERENCES_FILE
 import com.strizhonovapps.anylangapp.service.WordService
 import com.strizhonovapps.anylangapp.types.LanguageType
+import com.strizhonovapps.anylangapp.view.DEFAULT_LANG_KEY
 import java.util.*
 
-private const val DEFAULT_LANG_KEY = "en"
-
 abstract class BaseLanguageDialogFactory(private val wordService: WordService,
-                                         private val context: AppCompatActivity)
+                                         private val context: AppCompatActivity,
+                                         private val setLangFunction: (LanguageType, String) -> Unit,
+                                         private val finishActivityFunc: () -> Unit)
     : LanguageDialogFactory {
 
     private val availableLangs: SortedMap<String, String> = TreeMap()
@@ -66,24 +63,9 @@ abstract class BaseLanguageDialogFactory(private val wordService: WordService,
         return AlertDialog.Builder(context)
                 .setNegativeButton(context.getString(R.string.cancel_content)) { dialog: DialogInterface, _ ->
                     dialog.dismiss()
-                    setDefaultLanguage(type)
-                    finishActivityWithEmptyResult()
+                    setLangFunction(type, DEFAULT_LANG_KEY)
+                    finishActivityFunc()
                 }
-    }
-
-    protected fun setDefaultLanguage(type: LanguageType) {
-        val preferences = context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE)
-        if (!preferences.contains(type.toString())) {
-            val preferencesEditor = preferences.edit()
-            preferencesEditor.putString(type.toString(), DEFAULT_LANG_KEY)
-            preferencesEditor.apply()
-        }
-    }
-
-    protected fun finishActivityWithEmptyResult() {
-        val returnIntent = Intent()
-        context.setResult(Activity.RESULT_CANCELED, returnIntent)
-        context.finish()
     }
 
 }

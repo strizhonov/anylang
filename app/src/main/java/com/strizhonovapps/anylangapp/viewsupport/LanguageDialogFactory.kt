@@ -4,5 +4,4 @@ import android.app.AlertDialog
 
 interface LanguageDialogFactory {
     fun getDialog(): AlertDialog
-    fun setDefaultLanguage()
 }
