@@ -9,8 +9,8 @@ android {
         applicationId 'com.strizhonovapps_languages_learning.anylangapp_word_cards'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 37
-        versionName "1.37"
+        versionCode 38
+        versionName "1.38"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
